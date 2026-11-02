@@ -1,26 +1,90 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+    --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+    --color-brand: #356759;
+    --color-brand-soft: #dce8e1;
+    --color-ink: #1b1f22;
+    --color-muted: #767c81;
+    --color-surface: #f7f8f4;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Home slider controls */
+section .home-slider .swiper-button-prev,
+section .home-slider .swiper-button-next {
+    top: auto;
+    bottom: 30px;
+    margin-top: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    backdrop-filter: blur(6px);
+    transition:
+        background-color 200ms ease,
+        border-color 200ms ease;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+section .home-slider .swiper-button-prev:hover,
+section .home-slider .swiper-button-next:hover {
+    background-color: rgba(255, 255, 255, 0.24);
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+section .home-slider .swiper-button-prev::after,
+section .home-slider .swiper-button-next::after {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+section .home-slider .swiper-button-prev {
+    left: auto;
+    right: 92px;
+}
+
+section .home-slider .swiper-button-next {
+    right: 36px;
+}
+
+section .home-slider .swiper-pagination {
+    left: 24px;
+    right: auto;
+    bottom: 46px;
+    width: auto;
+    text-align: left;
+}
+
+section .home-slider .swiper-pagination-bullet {
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background-color: #fff;
+    opacity: 0.45;
+    transition:
+        width 250ms ease,
+        opacity 250ms ease;
+}
+
+section .home-slider .swiper-pagination-bullet-active {
+    width: 26px;
+    opacity: 1;
+}
+
+@media (min-width: 1280px) {
+    section .home-slider .swiper-pagination {
+        left: max(40px, calc((100% - 1440px) / 2 + 40px));
+    }
+}
+
+@media (max-width: 639px) {
+    section .home-slider .swiper-button-prev,
+    section .home-slider .swiper-button-next {
+        display: none;
+    }
+
+    section .home-slider .swiper-pagination {
+        bottom: 28px;
+    }
 }
