@@ -1,7 +1,8 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
@@ -22,11 +23,8 @@ const BookDetailsPage = () => {
     const [isBorrowing, setIsBorrowing] = useState(false);
 
     // Fetch book details with JWT authentication
-    const fetchBook = async () => {
+    const fetchBook = useCallback(async () => {
         try {
-            setLoading(true);
-            setError("");
-
             const { data: tokenData, error: tokenError } =
                 await authClient.token();
 
@@ -46,13 +44,13 @@ const BookDetailsPage = () => {
 
             const data = await response.json();
             setBook(data);
+            setError("");
         } catch (error) {
             setError(error.message);
-        } finally {
-            setLoading(false);
         }
-    };
+    }, [id]);
 
+    // Load book details after session is ready
     useEffect(() => {
         if (!id || sessionLoading) return;
 
@@ -61,7 +59,55 @@ const BookDetailsPage = () => {
             return;
         }
 
-        fetchBook();
+        let ignore = false;
+
+        const loadBook = async () => {
+            await Promise.resolve();
+
+            if (ignore) return;
+
+            try {
+                const { data: tokenData, error: tokenError } =
+                    await authClient.token();
+
+                if (tokenError || !tokenData?.token) {
+                    throw new Error(
+                        "Token is missing. Please log in again."
+                    );
+                }
+
+                const response = await fetch(`${API_BASE}/books/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${tokenData.token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch book details");
+                }
+
+                const data = await response.json();
+
+                if (!ignore) {
+                    setBook(data);
+                    setError("");
+                }
+            } catch (error) {
+                if (!ignore) {
+                    setError(error.message);
+                }
+            } finally {
+                if (!ignore) {
+                    setLoading(false);
+                }
+            }
+        };
+
+        loadBook();
+
+        return () => {
+            ignore = true;
+        };
     }, [id, sessionLoading, session?.user, router]);
 
     // Borrow book with JWT authentication
@@ -118,7 +164,7 @@ const BookDetailsPage = () => {
         return (
             <div className="flex min-h-[60vh] items-center justify-center bg-[#f8faf9]">
                 <div className="text-center">
-                    <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-[#dcece3] border-t-[#356759]" />
+                    <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-[#dcece3] border-t-brand" />
                     <p className="mt-4 text-sm font-medium text-gray-500">
                         Loading book details...
                     </p>
@@ -146,15 +192,18 @@ const BookDetailsPage = () => {
             <div className="mx-auto max-w-7xl px-5 md:px-8">
                 <div className="grid items-center gap-10 rounded-3xl border border-gray-100 bg-white p-5 shadow-sm md:grid-cols-2 md:gap-12 md:p-10 lg:p-14">
                     {/* Book Image */}
-                    <div className="flex min-h-[350px] items-center justify-center overflow-hidden rounded-2xl bg-[#f2f6f3] p-6 md:min-h-[480px]">
+                    <div className="flex min-h-87.5 items-center justify-center overflow-hidden rounded-2xl bg-[#f2f6f3] p-6 md:min-h-120">
                         {book.image ? (
-                            <img
+                            <Image
                                 src={book.image}
-                                alt={book.title}
-                                className="max-h-[430px] w-full rounded-xl object-contain"
+                                alt={book.title || "Book cover"}
+                                width={400}
+                                height={500}
+                                unoptimized
+                                className="max-h-107.5 w-full rounded-xl object-contain"
                             />
                         ) : (
-                            <div className="flex h-[350px] items-center justify-center text-sm text-gray-400">
+                            <div className="flex h-87.5 items-center justify-center text-sm text-gray-400">
                                 No Image Available
                             </div>
                         )}
@@ -162,7 +211,7 @@ const BookDetailsPage = () => {
 
                     {/* Book Information */}
                     <div className="py-3">
-                        <span className="inline-flex rounded-full bg-[#e8f3ec] px-4 py-2 text-xs font-semibold tracking-wide text-[#356759]">
+                        <span className="inline-flex rounded-full bg-[#e8f3ec] px-4 py-2 text-xs font-semibold tracking-wide text-brand">
                             {book.category}
                         </span>
 
@@ -172,7 +221,7 @@ const BookDetailsPage = () => {
 
                         <p className="mt-4 text-base text-gray-500">
                             Written by{" "}
-                            <span className="font-semibold text-[#356759]">
+                            <span className="font-semibold text-brand">
                                 {book.author}
                             </span>
                         </p>
@@ -202,7 +251,7 @@ const BookDetailsPage = () => {
                                 <p className="text-xs font-medium tracking-wide text-gray-500">
                                     AVAILABLE COPIES
                                 </p>
-                                <p className="mt-2 text-3xl font-bold text-[#356759]">
+                                <p className="mt-2 text-3xl font-bold text-brand">
                                     {book.availableCopies}
                                 </p>
                             </div>
@@ -212,7 +261,7 @@ const BookDetailsPage = () => {
                         <button
                             onClick={handleBorrow}
                             disabled={!isAvailable || isBorrowing}
-                            className="mt-8 w-full rounded-xl bg-[#356759] px-6 py-4 text-sm font-semibold text-white shadow-sm transition duration-300 hover:bg-[#294f44] hover:shadow-md disabled:cursor-not-allowed disabled:bg-gray-300 disabled:shadow-none"
+                            className="mt-8 w-full rounded-xl bg-brand px-6 py-4 text-sm font-semibold text-white shadow-sm transition duration-300 hover:bg-[#294f44] hover:shadow-md disabled:cursor-not-allowed disabled:bg-gray-300 disabled:shadow-none"
                         >
                             {isBorrowing
                                 ? "Borrowing..."

@@ -43,7 +43,7 @@ export default function ProfilePage() {
                 </Link>
 
                 <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-                    <div className="bg-[#356759] px-6 py-10 text-center">
+                    <div className="bg-brand px-6 py-10 text-center">
                         <div className="mx-auto flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-white text-3xl font-bold text-[#247a50] shadow-md">
                             {user.image ? (
                                 <Image

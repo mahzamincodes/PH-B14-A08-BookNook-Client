@@ -55,18 +55,18 @@ const categories = [
 const TopCategories = () => {
     return (
         <section className="bg-white py-16 sm:py-20 lg:py-24">
-            <div className="mx-auto w-full max-w-[1440px] px-6 xl:px-10">
+            <div className="mx-auto w-full max-w-360 px-6 xl:px-10">
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
                     <div>
                         <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-brand">
                             Browse by Genre
                         </p>
-                        <h2 className="mt-3 max-w-[560px] text-[30px] leading-[1.12] font-semibold tracking-[-0.02em] text-ink sm:text-[38px] lg:text-[44px]">
+                        <h2 className="mt-3 max-w-140 text-[30px] leading-[1.12] font-semibold tracking-[-0.02em] text-ink sm:text-[38px] lg:text-[44px]">
                             Find your next read by category
                         </h2>
                     </div>
 
-                    <p className="max-w-[420px] text-[15px] leading-7 text-muted lg:pb-1">
+                    <p className="max-w-105 text-[15px] leading-7 text-muted lg:pb-1">
                         Every shelf is organised by genre. Pick a direction and
                         start browsing the collection.
                     </p>
@@ -77,12 +77,12 @@ const TopCategories = () => {
                         <li key={category.name} className="h-full">
                             <Link
                                 href={`/books?category=${category.name}`}
-                                className="group flex h-full flex-col rounded-2xl border border-black/[0.06] bg-white p-5 transition duration-200 hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-[0_18px_40px_-30px_rgba(27,31,34,0.45)]"
+                                className="group flex h-full flex-col rounded-2xl border border-black/6 bg-white p-5 transition duration-200 hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-[0_18px_40px_-30px_rgba(27,31,34,0.45)]"
                             >
                                 <div className="flex items-start justify-between">
                                     <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-soft text-brand">
                                         <svg
-                                            className="h-[21px] w-[21px]"
+                                            className="h-5.25 -[21px]"
                                             viewBox="0 0 24 24"
                                             fill="none"
                                             stroke="currentColor"

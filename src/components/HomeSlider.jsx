@@ -42,8 +42,8 @@ const HomeSlider = () => {
     return (
         <section className="relative w-full overflow-hidden bg-ink">
             <h1 className="sr-only">
-                BookNook — share the books on your shelf and borrow from
-                readers near you
+                BookNook — share the books on your shelf and borrow from readers
+                near you
             </h1>
 
             <Swiper
@@ -68,7 +68,7 @@ const HomeSlider = () => {
                 navigation
                 pagination={{ clickable: true }}
                 a11y={{ enabled: true }}
-                className="home-slider h-[540px] w-full sm:h-[600px] lg:h-[640px]"
+                className="home-slider h-135 w-full sm:h-150 lg:h-160"
             >
                 {slides.map((slide, index) => (
                     <SwiperSlide key={slide.title} className="relative">
@@ -82,11 +82,11 @@ const HomeSlider = () => {
                             fetchPriority={index === 0 ? "high" : "auto"}
                         />
 
-                        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-black/25" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/10" />
+                        <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/60 to-black/25" />
+                        <div className="absolute inset-0 bg-linear-to-t from-black/55 via-transparent to-black/10" />
 
-                        <div className="relative z-10 mx-auto flex h-full w-full max-w-[1440px] items-center px-6 xl:px-10">
-                            <div className="max-w-[620px] pb-10 sm:pb-0">
+                        <div className="relative z-10 mx-auto flex h-full w-full max-w-360 items-center px-6 xl:px-10">
+                            <div className="max-w-155 pb-10 sm:pb-0">
                                 <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-white/70">
                                     BookNook
                                 </p>

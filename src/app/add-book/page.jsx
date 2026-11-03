@@ -298,7 +298,7 @@ const AddBookPage = () => {
 
     return (
         <div className="bg-surface">
-            <div className="mx-auto w-full max-w-[1440px] px-6 py-12 sm:py-16 xl:px-10">
+            <div className="mx-auto w-full max-w-360 px-6 py-12 sm:py-16 xl:px-10">
                 <div className="grid gap-10 lg:grid-cols-[320px_1fr] lg:gap-16">
                     <aside className="lg:sticky lg:top-28 lg:self-start">
                         <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-brand">
@@ -309,13 +309,13 @@ const AddBookPage = () => {
                             Add a new book
                         </h1>
 
-                        <p className="mt-4 max-w-[360px] text-[15px] leading-7 text-muted">
+                        <p className="mt-4 max-w-90 text-[15px] leading-7 text-muted">
                             Share a title from your shelf with the community.
                             Add the details once and let another reader borrow
                             it.
                         </p>
 
-                        <div className="mt-8 hidden rounded-2xl border border-black/[0.06] bg-white p-5 lg:block">
+                        <div className="mt-8 hidden rounded-2xl border border-black/6 bg-white p-5 lg:block">
                             <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-brand">
                                 Before you add
                             </p>
@@ -350,7 +350,7 @@ const AddBookPage = () => {
                     <form
                         onSubmit={handleSubmit}
                         noValidate
-                        className="w-full max-w-[760px] rounded-2xl border border-black/[0.06] bg-white p-6 shadow-[0_20px_60px_-40px_rgba(27,31,34,0.45)] sm:p-8"
+                        className="w-full max-w-190 rounded-2xl border border-black/6 bg-white p-6 shadow-[0_20px_60px_-40px_rgba(27,31,34,0.45)] sm:p-8"
                     >
                         <div className="flex items-start justify-between gap-4">
                             <div>
@@ -509,7 +509,7 @@ const AddBookPage = () => {
                                     value={form.description}
                                     onChange={handleChange}
                                     placeholder="What is the book about, and what kind of reader will enjoy it?"
-                                    className={`mt-2 min-h-[132px] resize-y ${textareaClass(Boolean(errors.description))}`}
+                                    className={`mt-2 min-h-33 resize-y ${textareaClass(Boolean(errors.description))}`}
                                     aria-invalid={Boolean(errors.description)}
                                     aria-describedby={errors.description ? "description-error" : undefined}
                                     required
@@ -540,12 +540,12 @@ const AddBookPage = () => {
                                 />
 
                                 {image ? (
-                                    <div className="mt-2 flex flex-col gap-4 rounded-xl border border-black/[0.08] bg-surface/60 p-4 sm:flex-row sm:items-center">
+                                    <div className="mt-2 flex flex-col gap-4 rounded-xl border border-black/8 bg-surface/60 p-4 sm:flex-row sm:items-center">
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
                                         <img
                                             src={image.preview}
                                             alt="Selected book cover preview"
-                                            className="h-24 w-20 rounded-md border border-black/[0.08] object-cover"
+                                            className="h-24 w-20 rounded-md border border-black/8 object-cover"
                                         />
 
                                         <div className="min-w-0 flex-1">
@@ -615,7 +615,7 @@ const AddBookPage = () => {
                             </div>
                         </div>
 
-                        <div className="my-7 h-px bg-black/[0.06]" />
+                        <div className="my-7 h-px bg-black/6" />
 
                         <div>
                             <div className="flex flex-wrap items-center gap-2">
@@ -679,8 +679,8 @@ const AddBookPage = () => {
                             </div>
                         </div>
 
-                        <div className="mt-8 flex flex-col gap-4 border-t border-black/[0.06] pt-6 sm:flex-row sm:items-center sm:justify-between">
-                            <p className="max-w-[280px] text-[13px] leading-6 text-muted">
+                        <div className="mt-8 flex flex-col gap-4 border-t border-black/6 pt-6 sm:flex-row sm:items-center sm:justify-between">
+                            <p className="max-w-70 text-[13px] leading-6 text-muted">
                                 You can edit or delete this book later from{" "}
                                 <span className="font-medium text-ink">My Books</span>.
                             </p>
@@ -742,7 +742,7 @@ const AddBookPage = () => {
                 <div
                     role="status"
                     aria-live="polite"
-                    className="fixed inset-x-6 bottom-6 z-[60] flex items-start gap-3 rounded-xl border border-black/[0.08] bg-white p-4 shadow-[0_24px_60px_-24px_rgba(27,31,34,0.5)] sm:left-auto sm:w-[360px]"
+                    className="fixed inset-x-6 bottom-6 z-60 flex items-start gap-3 rounded-xl border border-black/8 bg-white p-4 shadow-[0_24px_60px_-24px_rgba(27,31,34,0.5)] sm:left-auto sm:w-90"
                 >
                     <span
                         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${

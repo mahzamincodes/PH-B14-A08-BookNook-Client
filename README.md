@@ -2,6 +2,9 @@
 
 BookNook is an online book management and borrowing platform where users can explore books, add their own books, and manage their borrowing activities.
 
+## 🌐 Live Website
+
+[Visit BookNook](  )
 
 ## ✨ Features
 
@@ -39,7 +42,7 @@ BookNook is an online book management and borrowing platform where users can exp
 ### 1. Clone the frontend repository
 
 ```bash
-git clone YOUR_CLIENT_REPOSITORY_URL
+git clone https://github.com/mahzamincodes/PH-B14-A08-BookNook-Client
 cd booknook-client
 ```
 
@@ -51,7 +54,7 @@ npm install
 
 ### 3. Configure environment variables
 
-Create a `.env` file in the frontend root and configure the required Better Auth, MongoDB, and Google OAuth environment variables.
+Create a `.env` file in the frontend root and configure the required Better Auth, MongoDB, Google OAuth, and backend API URL environment variables.
 
 ### 4. Start the frontend
 
@@ -63,10 +66,19 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ### 5. Start the backend
 
-Clone the backend repository, install dependencies, configure its `.env` file with MongoDB credentials, ImgBB API key, and Better Auth URL, then run:
+Clone the backend repository:
 
 ```bash
+git clone https://github.com/mahzamincodes/PH-B14-A05-BookNook-Server
+cd booknook-server
 npm install
+```
+
+Configure the backend `.env` file with MongoDB credentials, ImgBB API key, Better Auth URL, and client URL.
+
+Then run:
+
+```bash
 npm start
 ```
 

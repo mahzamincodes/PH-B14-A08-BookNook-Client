@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
@@ -23,16 +24,18 @@ const BookCover = ({ book }) => {
     const addedDate = formatAddedDate(book.createdAt);
 
     return (
-        <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-surface">
+        <div className="relative aspect-3/4 overflow-hidden rounded-xl bg-surface">
             {book.image ? (
-                <img
+                <Image
                     src={book.image}
                     alt={`${book.title} cover`}
-                    loading="lazy"
+                    width={300}
+                    height={400}
+                    unoptimized
                     className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
                 />
             ) : (
-                <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-brand-soft via-[#e8f0eb] to-[#cfdfd5] px-4 text-center">
+                <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-linear-to-br from-brand-soft via-[#e8f0eb] to-[#cfdfd5] px-4 text-center">
                     <svg
                         className="h-8 w-8 text-brand/60"
                         viewBox="0 0 24 24"
@@ -76,7 +79,7 @@ const BookCard = ({ book }) => {
         <li className="h-full">
             <Link
                 href={`/all-books/${book._id}`}
-                className="group flex h-full flex-col rounded-2xl border border-black/[0.06] bg-white p-3 transition duration-200 hover:-translate-y-0.5 hover:border-brand/25 hover:shadow-[0_20px_44px_-32px_rgba(27,31,34,0.5)]"
+                className="group flex h-full flex-col rounded-2xl border border-black/6 bg-white p-3 transition duration-200 hover:-translate-y-0.5 hover:border-brand/25 hover:shadow-[0_20px_44px_-32px_rgba(27,31,34,0.5)]"
             >
                 <BookCover book={book} />
 
@@ -88,7 +91,7 @@ const BookCard = ({ book }) => {
                 </p>
 
                 <div className="mt-auto flex items-center justify-between px-1 pt-3.5">
-                    <span className="text-[12px] font-medium text-brand uppercase tracking-[0.05em]">
+                    <span className="text-[12px] font-medium text-brand uppercase tracking-wider">
                         {book.category}
                     </span>
                     <div className="flex items-center gap-2">
@@ -109,11 +112,11 @@ const BookCard = ({ book }) => {
 };
 
 const BookSkeleton = () => (
-    <li className="h-full animate-pulse rounded-2xl border border-black/[0.06] bg-white p-3">
-        <div className="aspect-[3/4] rounded-xl bg-black/[0.05]" />
-        <div className="mt-4 h-3.5 w-4/5 rounded bg-black/[0.06]" />
-        <div className="mt-2 h-3 w-1/2 rounded bg-black/[0.04]" />
-        <div className="mt-4 h-2.5 w-2/3 rounded bg-black/[0.04]" />
+    <li className="h-full animate-pulse rounded-2xl border border-black/6 bg-white p-3">
+        <div className="aspect-3/4 rounded-xl bg-black/5" />
+        <div className="mt-4 h-3.5 w-4/5 rounded bg-black/6" />
+        <div className="mt-2 h-3 w-1/2 rounded bg-black/4" />
+        <div className="mt-4 h-2.5 w-2/3 rounded bg-black/4" />
     </li>
 );
 
@@ -137,7 +140,7 @@ const EmptyState = () => (
         <p className="mt-4 text-[17px] font-semibold text-ink">
             The shelf is waiting for its first book
         </p>
-        <p className="mt-1.5 max-w-[380px] text-[14px] leading-6 text-muted">
+        <p className="mt-1.5 max-w-95 text-[14px] leading-6 text-muted">
             Nothing has been added yet. Share a title from your shelf and it
             will show up here.
         </p>
@@ -151,7 +154,7 @@ const EmptyState = () => (
 );
 
 const ErrorState = ({ onRetry }) => (
-    <div className="mt-10 flex flex-col items-center rounded-2xl border border-black/[0.06] bg-surface/60 px-6 py-14 text-center">
+    <div className="mt-10 flex flex-col items-center rounded-2xl border border-black/6 bg-surface/60 px-6 py-14 text-center">
         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-500">
             <svg
                 className="h-5 w-5"
@@ -171,7 +174,7 @@ const ErrorState = ({ onRetry }) => (
         <p className="mt-4 text-[17px] font-semibold text-ink">
             Books could not load
         </p>
-        <p className="mt-1.5 max-w-[380px] text-[14px] leading-6 text-muted">
+        <p className="mt-1.5 max-w-95 text-[14px] leading-6 text-muted">
             The library service did not respond. Check the connection and try
             again.
         </p>
@@ -201,10 +204,9 @@ const AllBooksPage = () => {
             setStatus("loading");
 
             try {
-                const response = await fetch(
-                    `${API_BASE}/books`,
-                    { signal: controller.signal },
-                );
+                const response = await fetch(`${API_BASE}/books`, {
+                    signal: controller.signal,
+                });
 
                 if (!response.ok) {
                     throw new Error(`Request failed with ${response.status}`);
@@ -218,8 +220,7 @@ const AllBooksPage = () => {
 
                 const sortedBooks = [...data].sort(
                     (a, b) =>
-                        new Date(b.createdAt ?? 0) -
-                        new Date(a.createdAt ?? 0),
+                        new Date(b.createdAt ?? 0) - new Date(a.createdAt ?? 0),
                 );
 
                 setBooks(sortedBooks);
@@ -241,19 +242,20 @@ const AllBooksPage = () => {
 
     return (
         <section className="bg-white py-16 sm:py-20 lg:py-24">
-            <div className="mx-auto w-full max-w-[1440px] px-6 xl:px-10">
+            <div className="mx-auto w-full max-w-360 px-6 xl:px-10">
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
                     <div>
                         <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-brand">
                             All Books
                         </p>
-                        <h1 className="mt-3 max-w-[560px] text-[30px] leading-[1.12] font-semibold tracking-[-0.02em] text-ink sm:text-[38px] lg:text-[44px]">
+                        <h1 className="mt-3 max-w-140 text-[30px] leading-[1.12] font-semibold tracking-[-0.02em] text-ink sm:text-[38px] lg:text-[44px]">
                             Explore the complete collection
                         </h1>
                     </div>
 
-                    <p className="max-w-[420px] text-[15px] leading-7 text-muted lg:pb-1">
-                        Browse every title shared by readers. Use the categories to narrow your search.
+                    <p className="max-w-105 text-[15px] leading-7 text-muted lg:pb-1">
+                        Browse every title shared by readers. Use the categories
+                        to narrow your search.
                     </p>
                 </div>
 
@@ -269,15 +271,15 @@ const AllBooksPage = () => {
                     >
                         {status === "loading"
                             ? Array.from({ length: 6 }, (_, index) => (
-                                <BookSkeleton key={index} />
-                            ))
+                                  <BookSkeleton key={index} />
+                              ))
                             : books.map((book) => (
-                                <BookCard key={book._id} book={book} />
-                            ))}
+                                  <BookCard key={book._id} book={book} />
+                              ))}
                     </ul>
                 )}
 
-                <div className="mt-10 flex flex-col items-start gap-3 border-t border-black/[0.06] pt-6 sm:flex-row sm:items-center sm:justify-between">
+                <div className="mt-10 flex flex-col items-start gap-3 border-t border-black/6 pt-6 sm:flex-row sm:items-center sm:justify-between">
                     <p className="text-[13.5px] leading-6 text-muted">
                         Every book here belongs to another reader.
                     </p>

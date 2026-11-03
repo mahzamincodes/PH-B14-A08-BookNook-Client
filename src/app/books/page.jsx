@@ -25,7 +25,7 @@ const BookCover = ({ book }) => {
     const addedDate = formatAddedDate(book.createdAt);
 
     return (
-        <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-surface">
+        <div className="relative aspect-3/4 overflow-hidden rounded-xl bg-surface">
             {book.image ? (
                 <Image
                     src={book.image}
@@ -35,7 +35,7 @@ const BookCover = ({ book }) => {
                     className="object-cover transition duration-300 group-hover:scale-[1.03]"
                 />
             ) : (
-                <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-brand-soft via-[#e8f0eb] to-[#cfdfd5] px-4 text-center">
+                <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-linear-to-br from-brand-soft via-[#e8f0eb] to-[#cfdfd5] px-4 text-center">
                     <svg
                         className="h-8 w-8 text-brand/60"
                         viewBox="0 0 24 24"
@@ -79,7 +79,7 @@ const BookCard = ({ book }) => {
         <li className="h-full">
             <Link
                 href={`/all-books/${book._id}`}
-                className="group flex h-full flex-col rounded-2xl border border-black/[0.06] bg-white p-3 transition duration-200 hover:-translate-y-0.5 hover:border-brand/25 hover:shadow-[0_20px_44px_-32px_rgba(27,31,34,0.5)]"
+                className="group flex h-full flex-col rounded-2xl border border-black/6 bg-white p-3 transition duration-200 hover:-translate-y-0.5 hover:border-brand/25 hover:shadow-[0_20px_44px_-32px_rgba(27,31,34,0.5)]"
             >
                 <BookCover book={book} />
 
@@ -109,11 +109,11 @@ const BookCard = ({ book }) => {
 };
 
 const BookSkeleton = () => (
-    <li className="h-full animate-pulse rounded-2xl border border-black/[0.06] bg-white p-3">
-        <div className="aspect-[3/4] rounded-xl bg-black/[0.05]" />
-        <div className="mt-4 h-3.5 w-4/5 rounded bg-black/[0.06]" />
-        <div className="mt-2 h-3 w-1/2 rounded bg-black/[0.04]" />
-        <div className="mt-4 h-2.5 w-2/3 rounded bg-black/[0.04]" />
+    <li className="h-full animate-pulse rounded-2xl border border-black/6 bg-white p-3">
+        <div className="aspect-3/4 rounded-xl bg-black/5" />
+        <div className="mt-4 h-3.5 w-4/5 rounded bg-black/6" />
+        <div className="mt-2 h-3 w-1/2 rounded bg-black/4" />
+        <div className="mt-4 h-2.5 w-2/3 rounded bg-black/4" />
     </li>
 );
 
@@ -141,7 +141,7 @@ const EmptyState = ({ category }) => (
                 : "The shelf is waiting for its first book"}
         </p>
 
-        <p className="mt-1.5 max-w-[380px] text-[14px] leading-6 text-muted">
+        <p className="mt-1.5 max-w-95 text-[14px] leading-6 text-muted">
             {category
                 ? "Be the first to add a book in this category."
                 : "Nothing has been added yet. Share a title from your shelf and it will show up here."}
@@ -157,7 +157,7 @@ const EmptyState = ({ category }) => (
 );
 
 const ErrorState = ({ onRetry }) => (
-    <div className="mt-10 flex flex-col items-center rounded-2xl border border-black/[0.06] bg-surface/60 px-6 py-14 text-center">
+    <div className="mt-10 flex flex-col items-center rounded-2xl border border-black/6 bg-surface/60 px-6 py-14 text-center">
         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-500">
             <svg
                 className="h-5 w-5"
@@ -179,7 +179,7 @@ const ErrorState = ({ onRetry }) => (
             Books could not load
         </p>
 
-        <p className="mt-1.5 max-w-[380px] text-[14px] leading-6 text-muted">
+        <p className="mt-1.5 max-w-95 text-[14px] leading-6 text-muted">
             The library service did not respond. Check the connection and try again.
         </p>
 
@@ -252,21 +252,21 @@ const BooksPage = ({ searchParams }) => {
 
     return (
         <section className="bg-white py-16 sm:py-20 lg:py-24">
-            <div className="mx-auto w-full max-w-[1440px] px-6 xl:px-10">
+            <div className="mx-auto w-full max-w-360 px-6 xl:px-10">
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
                     <div>
                         <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-brand">
                             {category ? "Browse by Category" : "All Books"}
                         </p>
 
-                        <h1 className="mt-3 max-w-[560px] text-[30px] leading-[1.12] font-semibold tracking-[-0.02em] text-ink sm:text-[38px] lg:text-[44px]">
+                        <h1 className="mt-3 max-w-140 text-[30px] leading-[1.12] font-semibold tracking-[-0.02em] text-ink sm:text-[38px] lg:text-[44px]">
                             {category
                                 ? `Books in "${category}"`
                                 : "Explore the complete collection"}
                         </h1>
                     </div>
 
-                    <p className="max-w-[420px] text-[15px] leading-7 text-muted lg:pb-1">
+                    <p className="max-w-105 text-[15px] leading-7 text-muted lg:pb-1">
                         {category
                             ? `Showing all books categorized as "${category}".`
                             : "Browse every title shared by readers. Use the categories below to narrow your search."}
@@ -294,7 +294,7 @@ const BooksPage = ({ searchParams }) => {
                 )}
 
                 {!category && (
-                    <div className="mt-10 flex flex-col items-start gap-3 border-t border-black/[0.06] pt-6 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="mt-10 flex flex-col items-start gap-3 border-t border-black/6 pt-6 sm:flex-row sm:items-center sm:justify-between">
                         <p className="text-[13.5px] leading-6 text-muted">
                             Every book here belongs to another reader.
                         </p>

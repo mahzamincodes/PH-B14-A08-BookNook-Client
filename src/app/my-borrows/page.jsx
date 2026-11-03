@@ -1,19 +1,16 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 
-const API_BASE =
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 const MyBorrowsPage = () => {
-    useEffect(() => {
-        document.title = "BookNook | My Borrows";
-    }, []);
-
     const router = useRouter();
+
     const { data: session, isPending: sessionLoading } =
         authClient.useSession();
 
@@ -21,40 +18,9 @@ const MyBorrowsPage = () => {
     const [loading, setLoading] = useState(true);
     const [returningId, setReturningId] = useState(null);
 
-    const fetchBorrows = useCallback(async () => {
-        if (!session?.user?.email) {
-            setLoading(false);
-            return;
-        }
-
-        try {
-            setLoading(true);
-
-            const { data: tokenData, error: tokenError } =
-                await authClient.token();
-
-            if (tokenError || !tokenData?.token) {
-                throw new Error("Token is missing. Please log in again.");
-            }
-
-            const response = await fetch(`${API_BASE}/borrows`, {
-                headers: {
-                    Authorization: `Bearer ${tokenData.token}`,
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to fetch borrowed books.");
-            }
-
-            const data = await response.json();
-            setBorrows(data);
-        } catch (error) {
-            toast.error(error.message || "Could not load borrowed books.");
-        } finally {
-            setLoading(false);
-        }
-    }, [session]);
+    useEffect(() => {
+        document.title = "BookNook | My Borrows";
+    }, []);
 
     useEffect(() => {
         if (sessionLoading) return;
@@ -64,8 +30,51 @@ const MyBorrowsPage = () => {
             return;
         }
 
-        fetchBorrows();
-    }, [session, sessionLoading, router, fetchBorrows]);
+        let ignore = false;
+
+        const loadBorrows = async () => {
+            try {
+                const { data: tokenData, error: tokenError } =
+                    await authClient.token();
+
+                if (tokenError || !tokenData?.token) {
+                    throw new Error("Token is missing. Please log in again.");
+                }
+
+                const response = await fetch(`${API_BASE}/borrows`, {
+                    headers: {
+                        Authorization: `Bearer ${tokenData.token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch borrowed books.");
+                }
+
+                const data = await response.json();
+
+                if (!ignore) {
+                    setBorrows(data);
+                }
+            } catch (error) {
+                if (!ignore) {
+                    toast.error(
+                        error.message || "Could not load borrowed books.",
+                    );
+                }
+            } finally {
+                if (!ignore) {
+                    setLoading(false);
+                }
+            }
+        };
+
+        loadBorrows();
+
+        return () => {
+            ignore = true;
+        };
+    }, [session, sessionLoading, router]);
 
     const handleReturn = async (borrowId) => {
         try {
@@ -78,15 +87,12 @@ const MyBorrowsPage = () => {
                 throw new Error("Token is missing. Please log in again.");
             }
 
-            const response = await fetch(
-                `${API_BASE}/borrows/${borrowId}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        Authorization: `Bearer ${tokenData.token}`,
-                    },
+            const response = await fetch(`${API_BASE}/borrows/${borrowId}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${tokenData.token}`,
                 },
-            );
+            });
 
             const result = await response.json();
 
@@ -110,7 +116,8 @@ const MyBorrowsPage = () => {
         return (
             <div className="flex min-h-[60vh] items-center justify-center bg-[#f8faf9]">
                 <div className="text-center">
-                    <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-[#dcece3] border-t-[#356759]" />
+                    <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-[#dcece3] border-t-brand" />
+
                     <p className="mt-4 text-sm font-medium text-gray-500">
                         Loading borrowed books...
                     </p>
@@ -128,6 +135,7 @@ const MyBorrowsPage = () => {
                     <h1 className="text-3xl font-bold tracking-tight text-[#1f2937] md:text-4xl">
                         My Borrows
                     </h1>
+
                     <p className="mt-2 text-sm text-gray-500">
                         Manage the books you have borrowed.
                     </p>
@@ -138,23 +146,27 @@ const MyBorrowsPage = () => {
                         <h2 className="text-xl font-semibold text-[#1f2937]">
                             No Borrowed Books
                         </h2>
+
                         <p className="mt-2 text-sm text-gray-500">
-                            You haven't borrowed any books yet.
+                            You havent borrowed any books yet.
                         </p>
                     </div>
                 ) : (
                     <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
                         <div className="overflow-x-auto">
-                            <table className="w-full min-w-[750px] text-left">
+                            <table className="w-full min-w-187.5 text-left">
                                 <thead className="bg-[#f0f7f2]">
-                                    <tr className="text-xs font-semibold tracking-wide text-[#356759]">
+                                    <tr className="text-xs font-semibold tracking-wide text-brand">
                                         <th className="px-6 py-5">BOOK</th>
+
                                         <th className="px-6 py-5">
                                             BORROW DATE
                                         </th>
+
                                         <th className="px-6 py-5">
                                             RETURN DATE
                                         </th>
+
                                         <th className="px-6 py-5 text-center">
                                             ACTION
                                         </th>
@@ -170,9 +182,15 @@ const MyBorrowsPage = () => {
                                             <td className="px-6 py-5">
                                                 <div className="flex items-center gap-4">
                                                     {borrow.image ? (
-                                                        <img
+                                                        <Image
                                                             src={borrow.image}
-                                                            alt={borrow.title}
+                                                            alt={
+                                                                borrow.title ||
+                                                                "Book cover"
+                                                            }
+                                                            width={48}
+                                                            height={64}
+                                                            unoptimized
                                                             className="h-16 w-12 rounded-lg object-cover"
                                                         />
                                                     ) : (
@@ -212,7 +230,7 @@ const MyBorrowsPage = () => {
                                                         returningId ===
                                                         borrow._id
                                                     }
-                                                    className="rounded-lg bg-[#356759] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#294f44] disabled:cursor-not-allowed disabled:bg-gray-300"
+                                                    className="rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#294f44] disabled:cursor-not-allowed disabled:bg-gray-300"
                                                 >
                                                     {returningId === borrow._id
                                                         ? "Returning..."

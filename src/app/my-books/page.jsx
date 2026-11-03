@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { authClient, useSession } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { Pencil, Trash2, X, BookOpen } from "lucide-react";
+import Image from "next/image";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -32,18 +33,24 @@ export default function MyBookPage() {
     });
 
     useEffect(() => {
-        if (isPending) return;
+        if (isPending || !user?.email) return;
 
-        if (!user?.email) {
-            setLoading(false);
-            return;
-        }
+        let ignore = false;
 
         const fetchMyBooks = async () => {
             try {
-                setLoading(true);
+                const { data: tokenData, error: tokenError } =
+                    await authClient.token();
 
-                const response = await fetch(`${API_BASE}/books`);
+                if (tokenError || !tokenData?.token) {
+                    throw new Error("Token is missing. Please log in again.");
+                }
+
+                const response = await fetch(`${API_BASE}/books`, {
+                    headers: {
+                        Authorization: `Bearer ${tokenData.token}`,
+                    },
+                });
 
                 if (!response.ok) {
                     throw new Error("Failed to fetch books");
@@ -54,18 +61,28 @@ export default function MyBookPage() {
                 const myBooks = data.filter(
                     (book) =>
                         book.addedBy?.email?.toLowerCase() ===
-                        user.email.toLowerCase()
+                        user.email.toLowerCase(),
                 );
 
-                setBooks(myBooks);
+                if (!ignore) {
+                    setBooks(myBooks);
+                }
             } catch (error) {
-                toast.error(error.message || "Could not load your books.");
+                if (!ignore) {
+                    toast.error(error.message || "Could not load your books.");
+                }
             } finally {
-                setLoading(false);
+                if (!ignore) {
+                    setLoading(false);
+                }
             }
         };
 
         fetchMyBooks();
+
+        return () => {
+            ignore = true;
+        };
     }, [user?.email, isPending]);
 
     const handleEditClick = (book) => {
@@ -124,7 +141,7 @@ export default function MyBookPage() {
                         Authorization: `Bearer ${tokenData.token}`,
                     },
                     body: JSON.stringify(formData),
-                }
+                },
             );
 
             const result = await response.json();
@@ -143,8 +160,8 @@ export default function MyBookPage() {
                                   result.book?.availableCopies ??
                                   book.availableCopies,
                           }
-                        : book
-                )
+                        : book,
+                ),
             );
 
             toast.success("Book updated successfully!");
@@ -175,7 +192,7 @@ export default function MyBookPage() {
                     headers: {
                         Authorization: `Bearer ${tokenData.token}`,
                     },
-                }
+                },
             );
 
             const result = await response.json();
@@ -185,7 +202,7 @@ export default function MyBookPage() {
             }
 
             setBooks((prev) =>
-                prev.filter((book) => book._id !== deletingBook._id)
+                prev.filter((book) => book._id !== deletingBook._id),
             );
 
             toast.success("Book deleted successfully!");
@@ -195,10 +212,10 @@ export default function MyBookPage() {
         }
     };
 
-    if (isPending || loading) {
+    if (isPending || (user?.email && loading)) {
         return (
             <div className="flex min-h-[60vh] items-center justify-center">
-                <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#356759] border-t-transparent" />
+                <div className="h-10 w-10 animate-spin rounded-full border-4 border-brand border-t-transparent" />
             </div>
         );
     }
@@ -206,7 +223,7 @@ export default function MyBookPage() {
     if (!user?.email) {
         return (
             <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
-                <BookOpen size={48} className="mb-4 text-[#356759]" />
+                <BookOpen size={48} className="mb-4 text-brand" />
                 <h2 className="text-2xl font-semibold text-gray-800">
                     Please log in
                 </h2>
@@ -215,7 +232,7 @@ export default function MyBookPage() {
                 </p>
                 <a
                     href="/login"
-                    className="mt-5 rounded-lg bg-[#356759] px-6 py-3 font-medium text-white transition hover:bg-[#284f44]"
+                    className="mt-5 rounded-lg bg-brand px-6 py-3 font-medium text-white transition hover:bg-[#284f44]"
                 >
                     Go to Login
                 </a>
@@ -227,7 +244,7 @@ export default function MyBookPage() {
         <section className="min-h-screen bg-[#f8faf9] px-4 py-12 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-7xl">
                 <div className="mb-10">
-                    <p className="mb-2 font-medium text-[#356759]">
+                    <p className="mb-2 font-medium text-brand">
                         YOUR COLLECTION
                     </p>
                     <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
@@ -240,7 +257,7 @@ export default function MyBookPage() {
 
                 <div className="mb-8 rounded-xl border border-[#e3ebe6] bg-white p-5">
                     <p className="text-sm text-gray-500">Total books added</p>
-                    <p className="mt-1 text-3xl font-bold text-[#356759]">
+                    <p className="mt-1 text-3xl font-bold text-brand">
                         {books.length}
                     </p>
                 </div>
@@ -249,17 +266,17 @@ export default function MyBookPage() {
                     <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-5 py-16 text-center">
                         <BookOpen
                             size={48}
-                            className="mx-auto mb-4 text-[#356759]"
+                            className="mx-auto mb-4 text-brand"
                         />
                         <h2 className="text-xl font-semibold text-gray-800">
-                            You haven't added any books yet
+                            You havent added any books yet
                         </h2>
                         <p className="mt-2 text-gray-500">
                             Books you add will appear here.
                         </p>
                         <a
                             href="/add-book"
-                            className="mt-6 inline-block rounded-lg bg-[#356759] px-6 py-3 font-medium text-white transition hover:bg-[#284f44]"
+                            className="mt-6 inline-block rounded-lg bg-brand px-6 py-3 font-medium text-white transition hover:bg-[#284f44]"
                         >
                             Add a Book
                         </a>
@@ -273,20 +290,23 @@ export default function MyBookPage() {
                             >
                                 <div className="h-64 overflow-hidden bg-[#edf3ef]">
                                     {book.image ? (
-                                        <img
+                                        <Image
                                             src={book.image}
-                                            alt={book.title}
+                                            alt={book.title || "Book cover"}
+                                            width={300}
+                                            height={400}
+                                            unoptimized
                                             className="h-full w-full object-cover"
                                         />
                                     ) : (
-                                        <div className="flex h-full items-center justify-center text-[#356759]">
+                                        <div className="flex h-full items-center justify-center text-brand">
                                             <BookOpen size={52} />
                                         </div>
                                     )}
                                 </div>
 
                                 <div className="p-5">
-                                    <span className="rounded-full bg-[#eaf2ed] px-3 py-1 text-xs font-medium text-[#356759]">
+                                    <span className="rounded-full bg-[#eaf2ed] px-3 py-1 text-xs font-medium text-brand">
                                         {book.category}
                                     </span>
 
@@ -307,7 +327,7 @@ export default function MyBookPage() {
 
                                     <div className="mt-1 flex justify-between text-sm text-gray-600">
                                         <span>Available copies</span>
-                                        <span className="font-semibold text-[#356759]">
+                                        <span className="font-semibold text-brand">
                                             {book.availableCopies}
                                         </span>
                                     </div>
@@ -317,7 +337,7 @@ export default function MyBookPage() {
                                             onClick={() =>
                                                 handleEditClick(book)
                                             }
-                                            className="flex items-center justify-center gap-2 rounded-lg border border-[#356759] py-2.5 text-sm font-medium text-[#356759] transition hover:bg-[#eaf2ed]"
+                                            className="flex items-center justify-center gap-2 rounded-lg border border-brand py-2.5 text-sm font-medium text-brand transition hover:bg-[#eaf2ed]"
                                         >
                                             <Pencil size={16} />
                                             Edit
@@ -367,7 +387,7 @@ export default function MyBookPage() {
                                     value={formData.title}
                                     onChange={handleInputChange}
                                     required
-                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-[#356759]"
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-brand"
                                 />
                             </div>
 
@@ -380,7 +400,7 @@ export default function MyBookPage() {
                                     value={formData.author}
                                     onChange={handleInputChange}
                                     required
-                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-[#356759]"
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-brand"
                                 />
                             </div>
 
@@ -392,13 +412,10 @@ export default function MyBookPage() {
                                     name="category"
                                     value={formData.category}
                                     onChange={handleInputChange}
-                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-[#356759]"
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-brand"
                                 >
                                     {categories.map((category) => (
-                                        <option
-                                            key={category}
-                                            value={category}
-                                        >
+                                        <option key={category} value={category}>
                                             {category}
                                         </option>
                                     ))}
@@ -415,7 +432,7 @@ export default function MyBookPage() {
                                     onChange={handleInputChange}
                                     required
                                     rows={4}
-                                    className="w-full resize-y rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-[#356759]"
+                                    className="w-full resize-y rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-brand"
                                 />
                             </div>
 
@@ -430,7 +447,7 @@ export default function MyBookPage() {
                                     value={formData.totalCopies}
                                     onChange={handleInputChange}
                                     required
-                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-[#356759]"
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-brand"
                                 />
                             </div>
 
@@ -445,7 +462,7 @@ export default function MyBookPage() {
                                 <button
                                     type="submit"
                                     disabled={saving}
-                                    className="rounded-lg bg-[#356759] px-5 py-3 font-medium text-white transition hover:bg-[#284f44] disabled:cursor-not-allowed disabled:opacity-60"
+                                    className="rounded-lg bg-brand px-5 py-3 font-medium text-white transition hover:bg-[#284f44] disabled:cursor-not-allowed disabled:opacity-60"
                                 >
                                     {saving ? "Saving..." : "Save Changes"}
                                 </button>

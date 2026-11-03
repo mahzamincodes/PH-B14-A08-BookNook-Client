@@ -116,7 +116,7 @@ export default function LoginPage() {
                                 onChange={handleChange}
                                 placeholder="Enter your email"
                                 required
-                                className="w-full rounded-lg border border-gray-200 py-3 pr-4 pl-10 text-sm outline-none transition focus:border-[#356759] focus:ring-2 focus:ring-[#356759]/10"
+                                className="w-full rounded-lg border border-gray-200 py-3 pr-4 pl-10 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/10"
                             />
                         </div>
                     </div>
@@ -144,7 +144,7 @@ export default function LoginPage() {
                                 onChange={handleChange}
                                 placeholder="Enter your password"
                                 required
-                                className="w-full rounded-lg border border-gray-200 py-3 pr-11 pl-10 text-sm outline-none transition focus:border-[#356759] focus:ring-2 focus:ring-[#356759]/10"
+                                className="w-full rounded-lg border border-gray-200 py-3 pr-11 pl-10 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/10"
                             />
 
                             <button
@@ -172,7 +172,7 @@ export default function LoginPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full rounded-lg bg-[#356759] py-3 text-sm font-semibold text-white transition hover:bg-[#2b5549] disabled:cursor-not-allowed disabled:opacity-60"
+                        className="w-full rounded-lg bg-brand py-3 text-sm font-semibold text-white transition hover:bg-[#2b5549] disabled:cursor-not-allowed disabled:opacity-60"
                     >
                         {loading ? "Logging in..." : "Login"}
                     </button>
@@ -226,10 +226,10 @@ export default function LoginPage() {
 
                 {/* Register Link */}
                 <p className="mt-7 text-center text-sm text-gray-500">
-                    Don't have an account?{" "}
+                    Dont have an account?{" "}
                     <Link
                         href="/register"
-                        className="font-semibold text-[#356759] hover:underline"
+                        className="font-semibold text-brand hover:underline"
                     >
                         Register
                     </Link>
