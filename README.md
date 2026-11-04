@@ -4,7 +4,12 @@ BookNook is an online book management and borrowing platform where users can exp
 
 ## 🌐 Live Website
 
-[Visit BookNook]( https://booknook-client-blond.vercel.app )
+[Visit BookNook](https://booknook-client-blond.vercel.app)
+
+## 🔗 Project Repositories
+
+- **Client Repository:** [BookNook Client](https://github.com/mahzamincodes/PH-B14-A08-BookNook-Client)
+- **Server Repository:** [BookNook Server](https://github.com/mahzamincodes/PH-B14-A08-BookNook-Server)
 
 ## ✨ Features
 
@@ -69,7 +74,7 @@ Open [http://localhost:3000](http://localhost:3000).
 Clone the backend repository:
 
 ```bash
-git clone https://github.com/mahzamincodes/PH-B14-A05-BookNook-Server
+git clone https://github.com/mahzamincodes/PH-B14-A08-BookNook-Server
 cd booknook-server
 npm install
 ```
