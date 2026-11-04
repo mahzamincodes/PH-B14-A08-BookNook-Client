@@ -602,7 +602,7 @@ const AddBookPage = () => {
                                         </span>
 
                                         <span className="mt-3 text-[14px] font-medium text-ink">
-                                            Click to upload or drag and drop
+                                            Click to upload
                                         </span>
 
                                         <span className="mt-1 text-[12.5px] text-muted">
